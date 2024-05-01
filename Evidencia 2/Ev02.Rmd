@@ -1,0 +1,277 @@
+---
+title: "Ev02"
+author: "Juan Ferro"
+date: "2024-04-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+::: {align="center"}
+Juan Rodrigo Ferro Rayón
+
+A01659298
+
+## **Parte 2**
+:::
+
+***Pregunta 1 - Trabajar con las secuencias de los coronavirus de otras especies que son similares a SARS-CoV-2, para tratar de explicar el fenómeno de zoonosis del virus. Incluye 20 especies reportadas. Puedes trabajar con variantes de SARS-CoV-2 de otros países.***
+
+Para esta evidencia se utilizaron los virus de la familia Coronavidae en distintos animales. Se compararon 20 animales distinitos y también se agregó al humano para tener un punto de comparación en el árbol filogenético.
+
+Primero conseguimos los genomas completos de 20 animales con el virus Covid. Asignamos las variables a su nombre en inglés del animal.
+
+```{r}
+
+library('seqinr')
+
+# -------------------------------------------------- CONSEGUIMOS LOS DATOS
+
+# Bat - Desmodus Rotundus
+bat <- read.fasta("Fastas/bat.fasta")
+# Pacific Salmon - Oncorhynchus tshawytscha
+pacific_salmon <- read.fasta("Fastas/pacific_salmon.fasta")
+# Duck - Anatidae
+duck <- read.fasta("Fastas/duck.fasta")
+# Canada Goose - Branta canadensis
+goose <- read.fasta("Fastas/goose.fasta")
+# Shrew - Sorex araneus
+shrew <- read.fasta("Fastas/shrew.fasta")
+# Rodent - Myodes rufocanus
+rodent <- read.fasta("Fastas/rodent.fasta")
+# Porcine - Sus scrofa
+porcine <- read.fasta("Fastas/porcine.fasta")
+# Bulbul - Pycnonotus jocosus
+bulbul <- read.fasta("Fastas/bulbul.fasta")
+# Rat - Rattus norvegicus
+rat <- read.fasta("Fastas/rat.fasta")
+# Ferret - Ferret 
+ferret <- read.fasta("Fastas/ferret.fasta")
+# Swine - Sus scrofa
+swine <- read.fasta("Fastas/swine.fasta")
+# Camel - Camelus
+camel <- read.fasta("Fastas/camel.fasta")
+# Mink - Neovison vison
+mink <- read.fasta("Fastas/mink.fasta")
+# Rabbit- Oryctolagus cuniculus
+rabbit <- read.fasta("Fastas/rabbit.fasta")
+# Night heron - Ardeidae
+night_heron <- read.fasta("Fastas/night_heron.fasta")
+# Wigeon - Mareca
+wigeon <- read.fasta("Fastas/wigeon.fasta")
+# Thrush - Turdus hortulorum
+thrush <- read.fasta("Fastas/thrush.fasta")
+# Turkey - Meleagris gallopavo
+turkey <- read.fasta("Fastas/turkey.fasta")
+# Beluga Whale - Delphinapterus leucas
+beluga_whale <- read.fasta("Fastas/beluga_whale.fasta")
+# Sparrow - Passeridae
+sparrow <- read.fasta("Fastas/sparrow.fasta")
+# Human - Homosapiens
+human <- read.fasta("Fastas/human.fasta")
+
+
+```
+
+Creamos vectores que nos ayudarán a hacer las gráficas y los for-loops.
+
+```{r}
+
+# -------------------------------------------------- VECTORES PARA LOS FORS
+
+# Vector que incluye todas las secuencias
+todas_secuencias <- c(
+  bat, pacific_salmon, duck, goose, shrew, rodent, porcine, 
+  bulbul, rat, ferret, swine, camel, mink, rabbit, night_heron, 
+  wigeon, thrush, turkey, beluga_whale, sparrow, human
+)
+
+# Lista de nombres de las secuencias
+nombres_secuencias <- c(
+  "bat", "pacific_salmon", "duck", "goose", "shrew", "rodent", "porcine", 
+  "bulbul", "rat", "ferret", "swine", "camel", "mink", "rabbit", "night_heron", 
+  "wigeon", "thrush", "turkey", "beluga_whale", "sparrow", "human"
+)
+
+```
+
+***Pregunta 2 - Calcula la longitud de las secuencias que incluyas.***
+
+Con ayuda de un for loop, se imprimen todas las longitudes de las secuencias. \
+Se imprimen en el formato: [nombre en inglés] : [longitud de secuencia]
+
+```{r}
+# --------------------------------------------------  LONGITUDES DE SECUENCIAS
+
+# Loop para imprimir los nombres de las secuencias
+for (i in 1 : length(todas_secuencias)) {
+  mensaje <- sprintf("%s : %d", nombres_secuencias[i], length(todas_secuencias[i][[1]]))
+  print(mensaje)
+}
+```
+
+***Pregunta 3 - Crea una sola gráfica donde se comparen el número de bases de ADN que componen todas las variantes del virus.*** 
+
+Primero creamos una variable que contenga el número de bases para cada animal.
+
+```{r}
+# Crear las variables de conteo para cada secuencia
+bat_c <- count(bat[[1]], 1)
+pacific_salmon_c <- count(pacific_salmon[[1]], 1)
+duck_c <- count(duck[[1]], 1)
+goose_c <- count(goose[[1]], 1)
+shrew_c <- count(shrew[[1]], 1)
+rodent_c <- count(rodent[[1]], 1)
+porcine_c <- count(porcine[[1]], 1)
+bulbul_c <- count(bulbul[[1]], 1)
+rat_c <- count(rat[[1]], 1)
+ferret_c <- count(ferret[[1]], 1)
+swine_c <- count(swine[[1]], 1)
+camel_c <- count(camel[[1]], 1)
+mink_c <- count(mink[[1]], 1)
+rabbit_c <- count(rabbit[[1]], 1)
+night_heron_c <- count(night_heron[[1]], 1)
+wigeon_c <- count(wigeon[[1]], 1)
+thrush_c <- count(thrush[[1]], 1)
+turkey_c <- count(turkey[[1]], 1)
+beluga_whale_c <- count(beluga_whale[[1]], 1)
+sparrow_c <- count(sparrow[[1]], 1)
+human_c <- count(human[[1]], 1)
+
+```
+
+Creamos un vector que contenga todas las variables de conteo previamente creadas.
+
+```{r}
+# Crear el vector de conteos combinando cada variable individualmente
+conteos_vector <- c(
+  bat_c, pacific_salmon_c, duck_c, goose_c, shrew_c, rodent_c, porcine_c, 
+  bulbul_c, rat_c, ferret_c, swine_c, camel_c, mink_c, rabbit_c, night_heron_c, 
+  wigeon_c, thrush_c, turkey_c, beluga_whale_c, sparrow_c, human_c
+)
+```
+
+Graficamos con ayuda de ggplot2.
+
+```{r}
+
+# -------------------------------------------------- GRÁFICA QUE MUESTRAS LAS BASES
+
+
+library(ggplot2)
+
+
+# Crear el data frame combined_counts
+combined_counts <- data.frame(
+  Variante_Virus = rep(nombres_secuencias, each = 21/5),  
+  Nucleotidos = rep(c('a', 'c', 'g', 't'), times = 21), 
+  nucleotide = rep(LETTERS[1:4], each = 21),            
+  Cantidad = conteos_vector                            
+)
+
+
+# Gráfico de barras con ggplot2 y labels del eje x orientados horizontalmente
+ggplot(combined_counts, aes(fill = Nucleotidos, y = Cantidad, x = Variante_Virus)) + 
+  geom_bar(position = "stack", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Para un mejor análisis, se utilizó una gráfica en donde cada barra representaría a un animal, incluyendo sus 4 bases por cada barra. Al momento de analizarla, se puede ver que en la mayoría de los animales, el covid tiene un similar número de bases. Sin embargo, los animales del medio, como es el *pacific salmon* tiene muchas más bases que los otros animales. Asimismo, el *night heron* y el *porcine* tienen menos bases que el promedio de los animales.
+
+En cuanto a los otros animales que tienen un número similar de bases, se puede ver que tienen un promedio de 9,000 timinas y las demás bases teniendo un promedio de entre 4,000 y 6,000. Esto nos ayuda a visualizar que la timina es la base predominante en el virus del covid en los animales.
+
+***Pregunta 5 - Agrega un análisis jerárquico global obtenido de las secuencias que se seleccionaron para estudiar.***
+
+Importamos todas las librerías a usar y creamos un vector que contenga todos los accession de los posteriores virus (en el mismo órden).
+
+```{r message=FALSE}
+# ---------------------------------------------------- Hacer el árbol filogenético
+
+
+# Importamos librerías necesarias y creamos un vector con todos los accessions
+library(Biostrings)
+library(seqinr)
+library(adegenet)
+library(ape)
+library(ggtree)
+library(DECIPHER)
+library(viridis)
+library(ggplot2)
+
+accession_virus <- c('NC_055953', 'NC_076697', 'NC_048214', 'NC_046965', 'NC_046955', 
+                     'NC_046954', 'NC_039208', 'NC_011547', 'NC_032730', 'NC_030292',
+                     'NC_028806', 'NC_028752', 'NC_023760', 'NC_017083', 'NC_016994',
+                     'NC_016995', 'NC_011549', 'NC_010800', 'NC_010646', 'NC_016992',
+                     'NC_045512')
+```
+
+Creamos un objeto que lea las secuencias y las anotamos en un archivo.
+
+Posteriormente, se formatean estas secuencias y con ayuda de las funciones OrientNucleotides y AlignSeqs, se crea un preprocesamiento de datos para crear el árbol filogenético.
+
+```{r}
+# Creamos un objeto que lee las secuencias y lo anotamos en un archivo
+
+virus_sequences <- read.GenBank(accession_virus)
+
+write.dna(virus_sequences, file='virus_seqs.fasta', format='fasta', append=
+            FALSE, nbcol=6, colsep=' ', colw=10)
+
+# Cargamos las secuencias
+
+# virus_seq_not_align <- readDNAStringSet('virus_seqs.fasta', format='fasta')
+
+# virus_seq_not_align <- OrientNucleotides(virus_seq_not_align)
+
+# virus_seq_algin <- AlignSeqs(virus_seq_not_align)
+
+
+```
+
+Anotamos todo en otro archivo el cual ya tenga todos los datos listos.
+
+Leemos el archivo en una variable llamada *virus_aligned* y después creamos su matriz de distancia con la ayuda de la función dist.alignment().
+
+```{r}
+
+# Anotamos la secuencia en otro archivo
+
+# writeXStringSet(virus_seq_algin, file='virus_seq_align.fasta')
+
+# Obtenemos el nuevo archivo y creamos una matriz de distancia
+
+virus_aligned <- read.alignment('virus_seq_align.fasta', format='fasta')
+
+matriz_distancia <- dist.alignment(virus_aligned, matrix='similarity')
+```
+
+Por último, con ayuda de nj() creamos el objeto virus_tree, el cual luego modificamos con la función ladderize() para luego plotearlo.
+
+```{r}
+virus_tree <- nj(matriz_distancia)
+
+virus_tree <- ladderize(virus_tree)
+
+# Plot del árbol
+
+plot(virus_tree, cex=0.6)
+title('Árbol filogenético de virus de Covid en Animales')
+```
+
+```{r}
+text.string<-
+"((((((Mink, Ferret) ,Swine) ,Camel, Bat), Rat), Shrew),((Rabbit, Rodent) ,Human), ((((Turkey, Duck), Rodent), Beluga Whale), (((Bulbul, Thrush), ((Porcine, Sparrow), Night Heron)), Wigeon), (Pacific Salmon)));"
+vert.tree<-read.tree(text=text.string)
+plot(vert.tree,no.margin=TRUE,edge.width=2)
+
+```
+
+Por último, se creó un árbol filogenético interpretado para un mejor análisis. Se cambió el nombre de los accession por su respectivo nombre de animal en inglés.
+
+Como se puede ver en el árbol filogenético, el virus de covid se podría separar en 3 grupos. En la parte de arriba se pueden encontrar más aves, como por ejemplo: *Wigeon, Night Heron, Sparrow, Thrush, Bulbul, Duck, Turkey,* y algunos otros animales que no son aves como la *Beluga Whale* o el *porcine.*
+
+Por otro lado, en la segunda rama, se puede ver que está el *human* junto con *rodent y rabbit.* Por último, en la última rama se encuentran animales que no son aves y que son mamíferos.
+
+En base a este análisis se puede ver como los virus pueden estar más cercanos a otros dependiendo ed las especies, habiendo 3 grupos principalmente: Las aves, el humano, y los mamíferos. Esto nos puede ayudar a entender mejor la evolución del Covid-19.
